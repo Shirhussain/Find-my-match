@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Question, Answer
+from .models import Question, Answer, UserAnswer
 
 
 class AnswerInline(admin.TabularInline):
@@ -12,8 +12,6 @@ class AnswerInline(admin.TabularInline):
     extra = 1
     # raw_id_fields = (,)
 
-
-
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [AnswerInline]
@@ -21,3 +19,4 @@ class QuestionAdmin(admin.ModelAdmin):
         model = Question 
 
 admin.site.register(Answer)
+admin.site.register(UserAnswer)

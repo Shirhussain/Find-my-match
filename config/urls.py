@@ -12,6 +12,7 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),
     path('accounts/', include('registration.backends.default.urls')),
+    path('questions/', include('questions.urls', namespace='questions')),
 ]
 
 
