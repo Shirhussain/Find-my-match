@@ -9,7 +9,7 @@ class UserResponseForm(forms.Form):
     their_importants_level = forms.ChoiceField(choices=LEVELS)
 
     def clean_question_id(self):
-        question_id = self.cleaned_data.get('question_id')
+        question_id = self.cleaned_data['question_id']
         try:
             obj = Question.objects.get(id=question_id)
         except:
@@ -17,7 +17,7 @@ class UserResponseForm(forms.Form):
         return question_id
 
     def clean_answer_id(self):
-        answer_id = self.cleaned_data.get('answer_id')
+        answer_id = self.cleaned_data['answer_id']
         try:
             obj = Answer.objects.get(id=answer_id)
         except:
@@ -25,9 +25,12 @@ class UserResponseForm(forms.Form):
         return answer_id
 
     def clean_their_answer_id(self):
-        their_answer_id = self.cleaned_data.get('their_answer_id')
+        their_answer_id = self.cleaned_data['their_answer_id']
         try:
             obj = Answer.objects.get(id=their_answer_id)
         except:
-            raise forms.ValidationError("There was an error with the answer you provide for them.")
+            if their_answer_id == -1:
+                return their_answer_id
+            else: 
+                raise forms.ValidationError("There was an error with the answer you provide for them.")
         return their_answer_id
