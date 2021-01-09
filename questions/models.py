@@ -59,7 +59,7 @@ class UserAnswer(models.Model):
     # to undrestand the weight of every answer we have to measure them with points
     # i put the default value to "-1" it means that our score never hits "-1" and also never gonna be "-1" after we save too
     # because i put it "300, 200, ..." if i put "0" so it clash with my code because i have already defined "0" 
-    my_points = models.IntegerField(_("My points"), default=-1, null=True, blank=True) 
+    my_points = models.IntegerField(_("My points"), default=-1) 
     their_answer = models.ForeignKey(Answer, verbose_name=_("Their answer"), 
                                     on_delete=models.CASCADE, 
                                     related_name="match_answer",
@@ -67,7 +67,7 @@ class UserAnswer(models.Model):
                                     )
     their_answer_importance = models.CharField(_("Their answer importants"), max_length=50, choices=LEVELS)
     timestamp = models.DateField(_("Timestamp"), auto_now=False, auto_now_add=True)
-    their_points = models.IntegerField(_("My points"), default=-1, blank=True, null=True) 
+    their_points = models.IntegerField(_("My points"), default=-1) 
 
 
     class Meta:
