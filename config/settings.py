@@ -42,11 +42,11 @@ INSTALLED_APPS = [
     # myapp 
     'questions',
     'news',
+    'matches',
 
     # third party
     'crispy_forms',
     'registration',
-
 ]
 
 MIDDLEWARE = [
