@@ -1,9 +1,12 @@
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+import datetime
 
 from .utils import get_match
+
 
 
 class MatchManager(models.Manager):
@@ -21,21 +24,35 @@ class MatchManager(models.Manager):
             # it means that it's not creating it's getting it.
             # obj is gonna be the instance which that's returning and obj exist but obj2 does not exits
             # because we are using get or create that's the only possibility. 
+            obj.check_update()
             return obj, False
         elif not obj and obj2: 
             # it means that it wasn't created
+            obj2.check_update()
             return obj2, False
         else:
             # now i'm creating an instance
             # the line bellow if you reverse the 'user_a' and 'user_b' places also it doesn't matter 
             # because of the try and except that i implemented before
-            match_decimal, num_of_questions = get_match(user_a, user_b)
             new_instance = self.create(user_a=user_a, user_b=user_b)
-            new_instance.match_decimal = match_decimal
-            new_instance.question_answered = num_of_questions
-            new_instance.save()
+            # do match
+            new_instance.do_match()
+            # match_decimal, num_of_questions = get_match(user_a, user_b)
+            # new_instance.match_decimal = match_decimal
+            # new_instance.question_answered = num_of_questions
+            # new_instance.save()
             return new_instance, True
-            
+
+    def update_all(self):
+        queryset = self.all()
+        # i don't wanna available this for every match, just wanna implement for specific time
+        now = timezone.now()
+        offset = now - datetime.timedelta(hours=12)
+        offset2 = now - datetime.timedelta(hours=36)
+        queryset.filter(updated__gt=offset2).filter(updated__lte=offset)
+        if queryset.count > 0:
+            for i in queryset:
+                i.check_update()
 
 
 class Match(models.Model):
@@ -54,7 +71,7 @@ class Match(models.Model):
     objects = MatchManager()
 
     def do_match(self):
-        # do match update
+        # do match update 
         user_a = self.user_a 
         user_b = self.user_b 
         match_decimal, num_of_questions = get_match(user_a, user_b)
@@ -64,8 +81,13 @@ class Match(models.Model):
     
     def check_update(self):
         # if update id needed
-        pass 
-
+        now = timezone.now()
+        # i'm gonna updated this on every 12 hour
+        offset = now - datetime.timedelta(hours=2)
+        if self.updated <= offset:
+            self.do_match()
+        else:
+            print("Already updated")
 
     def __str__(self):
         # return "%.2f" % (self.match_decimal)

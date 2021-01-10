@@ -14,6 +14,7 @@ def get_points(user_a, user_b):
 		for b in b_answers:
 			num_question += 1
 			if a.question.id == b.question.id:
+				# pref = prefrance
 				a_pref = a.their_answer
 				b_answer = b.my_answer
 				if a_pref == b_answer:
