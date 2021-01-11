@@ -51,7 +51,6 @@ LEVELS = (
 
 
 class UserAnswer(models.Model):
-
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     question = models.ForeignKey(Question, verbose_name=_("Question"), on_delete=models.CASCADE)
     my_answer = models.ForeignKey(Answer, verbose_name=_("Answer"), on_delete=models.CASCADE, related_name="user_answer")
