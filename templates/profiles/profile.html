@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    profile
+{% endblock title %}
+
+{% block content %}
+    <h3>{{profile.user.username}}</h3>
+    <p class="lead">{{match.match_decimal}}</p>
+    {% if profile.picture %}
+        <img src="{{profile.picture.url}}" alt="profile image">
+    {% endif %}
+        
+{% endblock content %}
+    

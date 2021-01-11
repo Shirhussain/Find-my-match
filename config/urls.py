@@ -13,6 +13,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('accounts/', include('registration.backends.default.urls')),
     path('questions/', include('questions.urls', namespace='questions')),
+    path('profiles/', include('profiles.urls', namespace='profiles')),
 ]
 
 

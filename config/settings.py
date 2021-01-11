@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'questions',
     'news',
     'matches',
+    'profiles',
 
     # third party
     'crispy_forms',
