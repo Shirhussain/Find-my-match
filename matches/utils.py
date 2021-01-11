@@ -32,17 +32,21 @@ def get_match(user_a, user_b):
 				a_points += b.their_points
 			a_total_points += b.their_points
 	if question_in_common > 0:
+		if a_total_points ==0:
+			a_total_points = 0.00000001
+		if b_total_points ==0:
+			b_total_points = 0.00000001
 		a_decimal = a_points/Decimal(a_total_points)
 		b_decimal = b_points/Decimal(b_total_points)
 		print(a_decimal, b_decimal)
 		# در شرایط که درصد هریک از اینها اگر صفر شود و در فورمل میانگین هندسی گذاشته شود همه صفر خواهد شد
 		# برای جلو گیری از این کار یک مقدار ناچیز بابر با صفر را قمت گذاری میکنم تا صفر نشود جواب ما
-		if a_decimal == 0:
-			a_decimal = 0.00001
-		if b_decimal == 0:
-			b_decimal = 0.00001
 		# اینجا وقتی در توان بالا کردم دیسمال را گذاشتم چون در غیر آن صورت عدد یک بالای مخرج تقسیم می شود
 		# اما بدون در نظر گرفتن عشاری ، یعنی فقط عدد کامل را در نظر میگیرد
+		if a_decimal == 0:
+			a_decimal = 0.00000001
+		if b_decimal == 0:
+			b_decimal = 0.00000001
 		match_percentage = (Decimal(a_decimal)*Decimal(b_decimal))**(1/Decimal(question_in_common))
 		return match_percentage, question_in_common
 	else:

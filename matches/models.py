@@ -3,13 +3,23 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from decimal import Decimal
 import datetime
 
 from .utils import get_match
 
-
+# get_or_create looking for two user now i'm goging to look just for one of them.
+class MatchQuerySet(models.query.QuerySet):
+    def matches(self, user):
+        q1 = self.filter(user_a=user)
+        q2 = self.filter(user_b=user)
+        return (q1|q2).distinct()
 
 class MatchManager(models.Manager):
+
+    def get_queryset(self):
+        return MatchQuerySet(self.model, using=self._db)
+
     def get_or_create_match(self, user_a=None, user_b=None):
         try:
             obj = self.get(user_a=user_a, user_b=user_b)
@@ -54,6 +64,9 @@ class MatchManager(models.Manager):
             for i in queryset:
                 i.check_update()
 
+    def matches_all(self, user):
+        return self.get_queryset().matches(user)
+
 
 class Match(models.Model):
 
@@ -69,6 +82,10 @@ class Match(models.Model):
         verbose_name_plural = _("matchs")
 
     objects = MatchManager()
+
+    @property
+    def get_percent(self):
+        return f'{(self.match_decimal*Decimal(100)):.2f}%'
 
     def do_match(self):
         # do match update 

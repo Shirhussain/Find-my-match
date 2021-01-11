@@ -1,7 +1,32 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <form action="" method="POST">
+<div class="row">
+    <div class="col-sm-8">
+        <h1>Dashboard</h1>
+    </div>
+    <div class="col-sm-4">
+        <h3>Matches</h3>
+        
+        {% for match_user, percent in matches %}
+            <div class="col-sm-4">
+                <a href="{{match_user.profile.get_absolute_url}}">
+                    {{match_user}}
+                    <br>
+                    {% if match_user.profile.picture %}
+                        <img src="{{match_user.profile.picture.url}}" alt="user profile picture" class="img-responsive">
+                    {% else %}
+                        <img src="{% static 'img/avatar.jpeg' %}" alt="user profile image" class="img-responsive">
+                    {% endif %}
+                    {{percent}}
+                </a>
+            </div>
+        {% endfor %}
+            
+    </div>
+</div>
+    <!-- <form action="" method="POST">
         {{form.errors}}
         {% csrf_token %}
         <h1>{{instance.text}}</h1>
@@ -11,7 +36,7 @@
             <input type="radio" name="answer_id" value="{{ans.id}}"> &nbsp;{{ans.text}} <br>
             {% endfor %}
         <input type="submit" value="Save and continue">
-    </form>
+    </form> -->
         
 {% endblock content %}
     
