@@ -85,7 +85,8 @@ class Match(models.Model):
 
     @property
     def get_percent(self):
-        return f'{(self.match_decimal*Decimal(100)):.2f}%'
+        new_decimal = Decimal(self.match_decimal) * Decimal(100)
+        return f'{new_decimal:.2f}%'
 
     def do_match(self):
         # do match update 
@@ -100,8 +101,8 @@ class Match(models.Model):
         # if update id needed
         now = timezone.now()
         # i'm gonna updated this on every 12 hour
-        offset = now - datetime.timedelta(hours=2)
-        if self.updated <= offset:
+        offset = now - datetime.timedelta(hours=12)
+        if self.updated <= offset or self.match_decimal == 0.00:
             self.do_match()
         else:
             print("Already updated")
