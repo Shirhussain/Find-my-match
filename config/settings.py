@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # third party
     'crispy_forms',
     'registration',
+    'localflavor',
 ]
 
 MIDDLEWARE = [
