@@ -13,9 +13,21 @@
             {% if profile.picture %}
                 <img src="{{profile.picture.url}}" alt="profile image">
             {% else %}
-                <!-- <img src="{% static 'img/avatar.jpeg' %}" alt="profile image"> -->
                 <img src='{% static "img/avatar.jpeg" %}' class='img-responsive' alt="profile image not found" />
             {% endif %}
         </div>
     </div>
+
+{% if jobs %}
+    <div class="row">
+        <ul>
+            
+            {% for job in jobs %}
+                <li>{{job.position}} in {{job.location}} at {{job.employer_name}}</li>
+            {% endfor %}
+                
+        </ul>
+    </div>
+{% endif %}
+    
 {% endblock content %}
