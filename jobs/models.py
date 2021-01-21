@@ -45,7 +45,7 @@ class Location(models.Model):
 
 class Employer(models.Model):
 
-    name = models.CharField(_("Name"), max_length=50, unique=True)
+    name = models.CharField(_("Name"), max_length=50)
     location = models.ForeignKey(Location, verbose_name=_("Location"), on_delete=models.CASCADE)
     # state = USStateField(null=True, blank=True)
     # website

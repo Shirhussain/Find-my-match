@@ -7,12 +7,13 @@ from decimal import Decimal
 import datetime
 
 from .utils import get_match
+from jobs.models import Job, Location, Employer
 
 # get_or_create looking for two user now i'm goging to look just for one of them.
 class MatchQuerySet(models.query.QuerySet):
     def matches(self, user):
-        q1 = self.filter(user_a=user)
-        q2 = self.filter(user_b=user)
+        q1 = self.filter(user_a=user).exclude(user_b=user)
+        q2 = self.filter(user_b=user).exclude(user_a=user)
         return (q1|q2).distinct()
 
 class MatchManager(models.Manager):
@@ -64,8 +65,34 @@ class MatchManager(models.Manager):
             for i in queryset:
                 i.check_update()
 
-    def matches_all(self, user):
-        return self.get_queryset().matches(user)
+    def get_matches(self, user):
+        qs = self.get_queryset().matches(user).order_by('-match_decimal')
+        matches = []
+        for match in qs:
+            if match.user_a == user:
+                items_wanted = [match.user_b]
+                matches.append(items_wanted)
+            elif match.user_b == user:
+                items_wanted = [match.user_a]
+                matches.append(items_wanted)
+            else:
+                pass 
+        return matches
+
+    def get_matches_with_percent(self, user):
+        qs = self.get_queryset().matches(user).order_by('-match_decimal')
+        matches = []
+		# id don't wanna show my percentage for my self as well so for that reason i have to implement this
+        for match in qs:
+            if match.user_a == user:
+                items_wanted = [match.user_b, match.get_percent]
+                matches.append(items_wanted)
+            elif match.user_b == user:
+                items_wanted = [match.user_a, match.get_percent]
+                matches.append(items_wanted)
+            else:
+                pass 
+        return matches
 
 
 class Match(models.Model):
@@ -113,3 +140,56 @@ class Match(models.Model):
 
     def get_absolute_url(self):
         return reverse("match_detail", kwargs={"pk": self.pk})
+
+
+class JobMatch(models.Model):
+
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, verbose_name=_("Job"), on_delete=models.CASCADE)
+    hidden = models.BooleanField(_("Hidden"), default=False)
+    liked = models.BooleanField(_("Liked")) # liked or saved
+    class Meta:
+        verbose_name = _("jobmatch")
+        verbose_name_plural = _("jobmatchs")
+
+    def __str__(self):
+        return self.user.username
+
+    def get_absolute_url(self):
+        return reverse("jobmatch_detail", kwargs={"pk": self.pk})
+
+
+class EmployerMatch(models.Model):
+
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    employer = models.ForeignKey(Employer, verbose_name=_("Employer"), on_delete=models.CASCADE)
+    hidden = models.BooleanField(_("Hidden"), default=False)
+    liked = models.BooleanField(_("Liked"))
+    
+    class Meta:
+        verbose_name = _("EmployerMatch")
+        verbose_name_plural = _("EmployerMatchs")
+
+    def __str__(self):
+        return self.user.username
+
+    def get_absolute_url(self):
+        return reverse("EmployerMatch_detail", kwargs={"pk": self.pk})
+
+
+class LocationMatch(models.Model):
+
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, verbose_name=_("Location"), on_delete=models.CASCADE)
+    hidden = models.BooleanField(_("Hidden"), default=False)
+    liked = models.BooleanField(_("Liked"))
+
+    class Meta:
+        verbose_name = _("LocationMatch")
+        verbose_name_plural = _("LocationMatchs")
+
+    def __str__(self):
+        return self.user.username
+
+    def get_absolute_url(self):
+        return reverse("LocationMatch_detail", kwargs={"pk": self.pk})
