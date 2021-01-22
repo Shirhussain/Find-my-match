@@ -6,14 +6,23 @@ from django.forms.models import modelformset_factory
 from .models import Profile, UserJob
 from .forms import UserJobForm
 from matches.models import Match
+from likes.models import UserLike
 
 @login_required
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     profile, created = Profile.objects.get_or_create(user=user)
+    user_like, user_like_created = UserLike.objects.get_or_create(user=request.user)
+    mutual_like = user_like.get_mutual_like(user)
+    print(UserLike.objects.get_all_mutual_likes(request.user))
     match, match_created = Match.objects.get_or_create_match(user_a=request.user, user_b=user)
     jobs = user.userjob_set.all()
-    context = {"profile": profile, "match": match, "jobs": jobs}
+    context = {
+        "profile": profile,
+        "match": match,
+        "jobs": jobs,
+        "mutual_like": mutual_like,
+        }
     return render(request, "profiles/profile.html", context)
 
 

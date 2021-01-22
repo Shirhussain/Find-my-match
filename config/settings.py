@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'matches',
     'profiles',
     'jobs',
+    'likes',
 
     # third party
     'crispy_forms',
