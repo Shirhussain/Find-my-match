@@ -194,8 +194,9 @@ class PositionMatch(models.Model):
     def __str__(self):
         return self.job.title
 
-    def get_absolute_url(self):
-        return reverse("PositionMatch_detail", kwargs={"pk": self.pk})
+    @property
+    def get_match_url(self):
+        return reverse("PositionMatch_detail", kwargs={"slug": self.job.slug})
 
 
 
@@ -213,8 +214,9 @@ class EmployerMatch(models.Model):
     def __str__(self):
         return self.user.username
 
-    def get_absolute_url(self):
-        return reverse("EmployerMatch_detail", kwargs={"pk": self.pk})
+    @property
+    def get_match_url(self):
+        return reverse("EmployerMatch_detail", kwargs={"slug": self.employer.slug})
 
 
 class LocationMatch(models.Model):
@@ -231,5 +233,6 @@ class LocationMatch(models.Model):
     def __str__(self):
         return self.user.username
 
-    def get_absolute_url(self):
-        return reverse("LocationMatch_detail", kwargs={"pk": self.pk})
+    @property
+    def get_match_url(self):
+        return reverse("LocationMatch_detail", kwargs={"pk": self.location.url})
