@@ -131,6 +131,9 @@ class Match(models.Model):
         offset = now - datetime.timedelta(hours=12)
         if self.updated <= offset or self.match_decimal == 0.00:
             self.do_match()
+            # what if i don't have already positions --> so do the following
+            PositionMatch.objects.update_top_suggestions(self.user_a, 6)
+            PositionMatch.objects.update_top_suggestions(self.user_b, 6)
         else:
             print("Already updated")
 
@@ -142,21 +145,58 @@ class Match(models.Model):
         return reverse("match_detail", kwargs={"pk": self.pk})
 
 
-class JobMatch(models.Model):
+class PositionMatchManager(models.Manager):
+    def update_top_suggestions(self, user, match_int):
+        matches = Match.objects.get_matches(user)[:match_int]
+        for match in matches:
+			# the above line bring match user object and percent but i want the first one which is match user
+            job_set = match[0].userjob_set.all()
+            if job_set.count()>0:
+                for job in job_set:
+                    try:
+                        the_job = Job.objects.get(title__iexact=job.position)
+                        positionmatch, created = self.get_or_create(user=user, job=the_job)
+                    except:
+                        pass
+                    try:
+                        the_loc = Location.objects.get(name__iexact=job.location)
+                        locmatch, created = LocationMatch.objects.get_or_create(user=user, location = the_loc)
+                    except:
+                        pass 
+                    try:
+                        the_employer = Employer.objects.get(name__iexact=job.employer_name)
+                        employermatch = EmployerMatch.objects.get_or_create(user=user, employer=the_employer)
+                    except:
+                        pass
+
+
+class PositionMatch(models.Model):
 
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     job = models.ForeignKey(Job, verbose_name=_("Job"), on_delete=models.CASCADE)
     hidden = models.BooleanField(_("Hidden"), default=False)
     liked = models.BooleanField(_("Liked"), null=True) # liked or saved
+    updated = models.DateTimeField(_("Updated"), auto_now=True, auto_now_add=False)
+
+    objects = PositionMatchManager()
+
+    def check_update(self, match_int):
+        now = timezone.now()
+        offset = now - datetime.timedelta(hours=12)
+        if self.updated <= offset:
+            PositionMatch.objects.update_top_suggestions(self.user, match_int)
+
+
     class Meta:
-        verbose_name = _("jobmatch")
-        verbose_name_plural = _("jobmatchs")
+        verbose_name = _("PositionMatch")
+        verbose_name_plural = _("PositionMatchs")
 
     def __str__(self):
-        return self.user.username
+        return self.job.title
 
     def get_absolute_url(self):
-        return reverse("jobmatch_detail", kwargs={"pk": self.pk})
+        return reverse("PositionMatch_detail", kwargs={"pk": self.pk})
+
 
 
 class EmployerMatch(models.Model):
