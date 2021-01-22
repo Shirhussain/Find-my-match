@@ -147,7 +147,7 @@ class JobMatch(models.Model):
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     job = models.ForeignKey(Job, verbose_name=_("Job"), on_delete=models.CASCADE)
     hidden = models.BooleanField(_("Hidden"), default=False)
-    liked = models.BooleanField(_("Liked")) # liked or saved
+    liked = models.BooleanField(_("Liked"), null=True) # liked or saved
     class Meta:
         verbose_name = _("jobmatch")
         verbose_name_plural = _("jobmatchs")
@@ -164,7 +164,7 @@ class EmployerMatch(models.Model):
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     employer = models.ForeignKey(Employer, verbose_name=_("Employer"), on_delete=models.CASCADE)
     hidden = models.BooleanField(_("Hidden"), default=False)
-    liked = models.BooleanField(_("Liked"))
+    liked = models.BooleanField(_("Liked"), null=True)
     
     class Meta:
         verbose_name = _("EmployerMatch")
@@ -182,7 +182,7 @@ class LocationMatch(models.Model):
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     location = models.ForeignKey(Location, verbose_name=_("Location"), on_delete=models.CASCADE)
     hidden = models.BooleanField(_("Hidden"), default=False)
-    liked = models.BooleanField(_("Liked"))
+    liked = models.BooleanField(_("Liked"), null=True)
 
     class Meta:
         verbose_name = _("LocationMatch")

@@ -5,7 +5,8 @@ from django.core.mail import send_mail
 from .forms import ContactForm, SignUpForm
 from .models import SignUp
 from questions.models import Question
-from matches.models import Match
+from matches.models import Match, LocationMatch, JobMatch, EmployerMatch
+from jobs.models import Job, Employer, Location
 
 # Create your views here.
 def home(request):
@@ -29,10 +30,48 @@ def home(request):
 
 	if request.user.is_authenticated:
 		matches = Match.objects.get_matches_with_percent(request.user)[:6]
+		# suggested jobs, location and employer
+		positions = []
+		locations = []
+		employers = [] 
+		for match in matches: 
+			# the above line bring match user object and percent but i want the first one which is match user
+			job_set = match[0].userjob_set.all()
+			if job_set.count()>0:
+				for job in job_set:
+					if job.position not in positions:
+						positions.append(job.position)
+						try:
+							the_job = Job.objects.get(title__iexact=job.position)
+							jobmatch, created = JobMatch.objects.get_or_create(user=request.user, job=the_job)
+							print("Job match are: ", jobmatch)
+						except:
+							pass
+					if job.location not in locations:
+						locations.append(job.location)
+						try:
+							the_loc = Location.objects.get(name__iexact=job.location)
+							locmatch, created = LocationMatch.objects.get_or_create(user=request.user, location = the_loc)
+							print("Local match are: ", locmatch)
+						except:
+							pass 
+					if job.employer_name not in employers:
+						employers.append(job.employer_name)
+						try:
+							the_employer = Employer.objects.get(name__iexact=job.employer_name)
+							employermatch = EmployerMatch.objects.get_or_create(user=request.user, employer=the_employer)
+							print("Employer match are: ", employermatch)
+						except:
+							pass
+
+
 		queryset = Question.objects.all().order_by('-timestamp') 
 		context = {
 			"queryset": queryset, 
-			'matches': matches
+			'matches': matches,
+			'positions': positions,
+			'locations': locations,
+			'employers': employers,
 		}
 		return render(request, "questions/home.html", context)
 
@@ -80,16 +119,3 @@ def contact(request):
 
 def about(request):
 	return render(request, "about.html", {})
-
-
-
-
-
-
-
-
-
-
-
-
-
