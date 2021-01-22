@@ -196,7 +196,7 @@ class PositionMatch(models.Model):
 
     @property
     def get_match_url(self):
-        return reverse("PositionMatch_detail", kwargs={"slug": self.job.slug})
+        return reverse("matches:PositionMatch_detail", kwargs={"slug": self.job.slug})
 
 
 
@@ -216,7 +216,7 @@ class EmployerMatch(models.Model):
 
     @property
     def get_match_url(self):
-        return reverse("EmployerMatch_detail", kwargs={"slug": self.employer.slug})
+        return reverse("matches:EmployerMatch_detail", kwargs={"slug": self.employer.slug})
 
 
 class LocationMatch(models.Model):
@@ -235,4 +235,4 @@ class LocationMatch(models.Model):
 
     @property
     def get_match_url(self):
-        return reverse("LocationMatch_detail", kwargs={"pk": self.location.url})
+        return reverse("matches:LocationMatch_detail", kwargs={"slug": self.location.slug})

@@ -18,7 +18,8 @@ class Profile(models.Model):
     """Model definition for Profile."""
 
     user = models.OneToOneField(User, verbose_name=_("User"), on_delete=models.CASCADE)
-    picture = models.ImageField(_("Picture"), upload_to=upload_location, 
+    picture = models.ImageField(_("Picture"), upload_to=upload_location,
+                                default="avatar.jpeg",
                                 height_field=None, 
                                 width_field=None, 
                                 max_length=None,

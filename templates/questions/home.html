@@ -37,9 +37,9 @@
             <hr/>
         </div>
         
-        {% for position in positions %}
+        {% for pos in positions %}
             <div class="col-sm-4">
-                <p class="lead">{{position}}</p>
+                <p class="lead"><a href="{{pos.get_match_url}}">{{pos.job.title}}</a></p>
             </div>
         {% endfor %}
 
@@ -51,7 +51,7 @@
         
         {% for loc in locations %}
             <div class="col-sm-4">
-                <p class="lead">{{loc.location.name}}</p>
+                <p class="lead"><a href="{{loc.get_match_url}}">{{loc.location.name}}</a></p>
             </div>
         {% endfor %}
 
@@ -63,7 +63,7 @@
         
         {% for emp in employers %}
             <div class="col-sm-4">
-                <p class="lead">{{emp.employer.name}}</p>
+                <p class="lead"><a href="{{emp.get_match_url}}">{{emp.employer.name}}</a></p>
             </div>
         {% endfor %}
                     

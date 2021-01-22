@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    position Detail
+{% endblock title %}
+
+{% block content %}
+    {{instance}}
+    
+    {% for match in matches %}
+        {{match.user}}
+        
+        {% if match.user.profile.picture %}
+            <img src="{{match.user.profile.picture.url" alt="user profile picture">
+        {% endif %}
+            
+    {% endfor %}
+        
+{% endblock content %}
+    
