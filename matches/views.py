@@ -1,8 +1,16 @@
+from django.contrib.auth.signals import user_logged_in
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import Http404
+from django.dispatch import receiver 
 
 from jobs.models import Job, Location, Employer
-from .models import PositionMatch, LocationMatch, EmployerMatch
+from .models import PositionMatch, LocationMatch, EmployerMatch, Match
+
+@receiver(user_logged_in)
+def get_user_match_receiver(sender, request, user, *args, **kwargs):
+    for u in User.objects.exclude(username=user.username).order_by('-id')[:200]:
+        Match.objects.get_or_create_match(user_a=u, user_b=user)
 
 def position_match_view_url(request, slug):
     try:

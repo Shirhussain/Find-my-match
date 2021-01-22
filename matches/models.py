@@ -1,10 +1,11 @@
+from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.db import models
-from django.contrib.auth.models import User
 from django.urls import reverse
 from decimal import Decimal
 import datetime
+
 
 from .utils import get_match
 from jobs.models import Job, Location, Employer
@@ -123,6 +124,9 @@ class Match(models.Model):
         self.match_decimal = match_decimal
         self.question_answered = num_of_questions
         self.save()
+        # what if i don't have already positions --> so do the following
+        PositionMatch.objects.update_top_suggestions(self.user_a, 6)
+        PositionMatch.objects.update_top_suggestions(self.user_b, 6)
     
     def check_update(self):
         # if update id needed
@@ -131,9 +135,6 @@ class Match(models.Model):
         offset = now - datetime.timedelta(hours=12)
         if self.updated <= offset or self.match_decimal == 0.00:
             self.do_match()
-            # what if i don't have already positions --> so do the following
-            PositionMatch.objects.update_top_suggestions(self.user_a, 6)
-            PositionMatch.objects.update_top_suggestions(self.user_b, 6)
         else:
             print("Already updated")
 
