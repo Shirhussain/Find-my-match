@@ -39,6 +39,9 @@ class Profile(models.Model):
     
     def get_absolute_url(self):
         return reverse("profiles:profile", kwargs={"username": self.user.username})
+
+    def like_link(self):
+        return reverse("likes:like_user", kwargs={"id": self.user.id})
     
 
 # why i don't use foreign key? because jobs.models are just for our own  taging of diffrent jobs

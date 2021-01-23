@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+
+{% endblock style %}
+
+{% block content %}
+
+{% if new_user %}
+    <h1>Welcome dear new user</h1>
+{% else %}
+    <div class="row">
+        <div class="col-sm-8">
+            <h1>Dashboard</h1>
+            
+            {% if mutual_likes %}
+                <div class="col-sm-12">
+                    <h3>Mutual interest</h3>
+                    {% for liked_user in mutual_likes %}
+                        <div class="col-sm-3 text-center">
+                            <a href="{{liked_user.profile.get_absolute_url}}">
+                                {{liked_user}}
+                                <br>
+                                {% if liked_user.profile.picture %}
+                                    <img src="{{liked_user.profile.picture.url}}" alt="user profile picture" class="img-responsive center-block img-featured-match">
+                                {% else %}
+                                    <img src="{% static 'img/avatar.jpeg' %}" alt="user profile image" class="img-responsive center-block img-featured-match">
+                                {% endif %}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+                
+        </div>
+        <div class="col-sm-4">
+            <div class="col-sm-12">
+                <h3>Matches</h3>
+                <hr/>
+            </div>
+            
+            {% for match_user, percent in matches %}
+                <div class="col-sm-4 text-center">
+                    <a href="{{match_user.profile.get_absolute_url}}">
+                        {{match_user}}
+                        <br>
+                        {% if match_user.profile.picture %}
+                            <img src="{{match_user.profile.picture.url}}" alt="user profile picture" class="img-responsive center-block img-featured-match">
+                        {% else %}
+                            <img src="{% static 'img/avatar.jpeg' %}" alt="user profile image" class="img-responsive center-block img-featured-match">
+                        {% endif %}
+                        {{percent}}
+                    </a>
+                </div>
+            {% endfor %}
+
+
+            <div class="col-sm-12">
+                <h1>Suggested positions</h1>
+                <hr/>
+            </div>
+            
+            {% for pos in positions %}
+                <div class="col-sm-4">
+                    <p class="lead"><a href="{{pos.get_match_url}}">{{pos.job.title}}</a></p>
+                </div>
+            {% endfor %}
+
+
+            <div class="col-sm-12">
+                <h1>Suggested locations</h1>
+                <hr/>
+            </div>
+            
+            {% for loc in locations %}
+                <div class="col-sm-4">
+                    <p class="lead"><a href="{{loc.get_match_url}}">{{loc.location.name}}</a></p>
+                </div>
+            {% endfor %}
+
+
+            <div class="col-sm-12">
+                <h1>Suggested employers</h1>
+                <hr/>
+            </div>
+            
+            {% for emp in employers %}
+                <div class="col-sm-4">
+                    <p class="lead"><a href="{{emp.get_match_url}}">{{emp.employer.name}}</a></p>
+                </div>
+            {% endfor %}
+                        
+        </div>
+    </div>
+{% endif %}
+{% endblock content %}
+    

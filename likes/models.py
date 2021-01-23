@@ -4,9 +4,12 @@ from django.contrib.auth.models import User
 
 
 class UserLikeManager(models.Manager):
-	def get_all_mutual_likes(self, user):
-		qs = user.liker.liked_users.all()
-		mutual_users = []
+	def get_all_mutual_likes(self, user, number):
+		try:
+			qs = user.liker.liked_users.all().order_by("?")
+		except:
+			return []
+		mutual_users = [][:number]
 		for other_user in qs:
 			try:
 				if other_user.liker.get_mutual_like(user):
@@ -16,11 +19,12 @@ class UserLikeManager(models.Manager):
 		return mutual_users
 
 
+
 class UserLike(models.Model):
     """Model definition for UserLike."""
 
     user = models.OneToOneField(User, verbose_name=_("User"), related_name="liker", on_delete=models.CASCADE)
-    liked_users = models.ManyToManyField(User, verbose_name=_("Liked users"), related_name="liked_users")
+    liked_users = models.ManyToManyField(User, verbose_name=_("Liked users"), related_name="liked_users", blank=True)
 
     def get_mutual_like(self, user_b):
         i_like = False

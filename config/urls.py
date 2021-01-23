@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-from news import views 
+from dashboard import views 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,6 +15,7 @@ urlpatterns = [
     path('questions/', include('questions.urls', namespace='questions')),
     path('profiles/', include('profiles.urls', namespace='profiles')),
     path('matches/', include('matches.urls', namespace='matches')),
+    path('likes/', include('likes.urls', namespace='likes')),
 ]
 
 

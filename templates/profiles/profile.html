@@ -18,6 +18,7 @@
         </div>
     </div>
     
+    <a href="{{profile.like_link}}">{% if do_i_like %} UnLike{% else %} Like{% endif %}</a>
     {% if mutual_like %}
         <p class="lead">You are connected</p>
         <p>Email: {{profile.user.email}}</p>

@@ -9,6 +9,26 @@
 <div class="row">
     <div class="col-sm-8">
         <h1>Dashboard</h1>
+        
+        {% if mutual_likes %}
+            <div class="col-sm-12">
+                <h3>Mutual interest</h3>
+                {% for liked_user in mutual_likes %}
+                    <div class="col-sm-3 text-center">
+                        <a href="{{liked_user.profile.get_absolute_url}}">
+                            {{liked_user}}
+                            <br>
+                            {% if liked_user.profile.picture %}
+                                <img src="{{liked_user.profile.picture.url}}" alt="user profile picture" class="img-responsive center-block img-featured-match">
+                            {% else %}
+                                <img src="{% static 'img/avatar.jpeg' %}" alt="user profile image" class="img-responsive center-block img-featured-match">
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+            
     </div>
     <div class="col-sm-4">
         <div class="col-sm-12">
