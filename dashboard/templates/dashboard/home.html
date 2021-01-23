@@ -16,13 +16,29 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            {% include 'questions/user_response_form.html' with form=question_form instance=question_instance center_text=True %}
+            
+            {% if question_instance %}
+                {% include 'questions/user_response_form.html' with form=question_form instance=question_instance center_text=True %}
+            {% else %}
+                <p class="lead text-center">
+                    you have already answered all questions please try later
+                </p>
+            {% endif %}
+                
         </div>
     </div>
 {% else %}
     <div class="row">
         <div class="col-sm-8">
-            {% include 'questions/user_response_form.html' with form=question_form instance=question_instance title_size=3 center_text=True %}
+            
+            {% if question_instance %}
+                {% include 'questions/user_response_form.html' with form=question_form instance=question_instance title_size=3 center_text=True %}
+            {% else %}
+                <p class="lead text-center">
+                    you have already answered all questions, please try later 
+                </p>
+            {% endif %}
+                
             {% if mutual_likes %}
                 <div class="col-sm-12">
                     <h3>Mutual interest</h3>

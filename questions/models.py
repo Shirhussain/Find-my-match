@@ -1,10 +1,18 @@
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
-
 from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 from django.urls import reverse
 from django.dispatch import receiver
+
+
+class QuestionManager(models.Manager):
+    def get_unanswered(self, user):
+        # wit Q look up is allows as to grab the model that is associated to other models 
+        q1 = Q(useranswer__user=user)
+        qs = self.exclude(q1)
+        return qs 
 
 
 class Question(models.Model):
@@ -13,7 +21,8 @@ class Question(models.Model):
     draft  = models.BooleanField(_("Draft"), default=False)
     timestamp = models.DateTimeField(_("Timestamp"), auto_now=False, auto_now_add=True)
 
-
+    objects = QuestionManager()
+    
     class Meta:
         verbose_name = _("Question")
         verbose_name_plural = _("Questions")
