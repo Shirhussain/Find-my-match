@@ -1,6 +1,10 @@
 from django.shortcuts import Http404, get_object_or_404, redirect, render, reverse
+from django.contrib import messages
+
+from matches.signals import user_matches_update
 from .models import Question, Answer, UserAnswer 
 from .forms import UserResponseForm
+
 
 def single(request, id):
     if request.user.is_authenticated:
@@ -11,12 +15,16 @@ def single(request, id):
         # and that's what try block is going to do for us
         try:
             user_answer = UserAnswer.objects.get(user=request.user, question=instance)
+            updated_q = True
         except UserAnswer.DoesNotExist:
             user_answer = UserAnswer()
+            updated_q = False
         except UserAnswer.MultipleObjectsReturned:
             user_answer = UserAnswer.objects.filter(user=request.user, question=instance)[0]
+            updated_q = True
         except:
             user_answer = UserAnswer()
+            updated_q = False
 
         form = UserResponseForm(request.POST or None)
         if form.is_valid():
@@ -50,6 +58,14 @@ def single(request, id):
                 user_answer.their_answer = None
                 user_answer.their_answer_importance = "not important"
             user_answer.save()
+            
+            # send the signal after saving the response
+            user_matches_update.send(user=request.user, sender=user_answer.__class__)
+            
+            if updated_q:
+                messages.success(request, "your response has been updated successfully  her is the link <a href='wwww.google.com'>info</a>.", extra_tags="safe updated")
+            else:
+                messages.success(request, "your response has been saved successfully.")
 
             next_q = Question.objects.get_unanswered(request.user).order_by('?')
             if next_q.count()>0:

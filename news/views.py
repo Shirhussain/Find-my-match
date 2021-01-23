@@ -9,6 +9,81 @@ from matches.models import Match, LocationMatch, PositionMatch, EmployerMatch
 from jobs.models import Job, Employer, Location
 from likes.models import UserLike
 
+# Create your views here.
+def home(request):
+	title = 'Sign Up Now'
+	form = SignUpForm(request.POST or None)
+	context = {
+		"title": title,
+		"form": form
+	}
+	if form.is_valid():
+		instance = form.save(commit=False)
+
+		full_name = form.cleaned_data.get("full_name")
+		if not full_name:
+			full_name = "New full name"
+		instance.full_name = full_name
+		instance.save()
+		context = {
+			"title": "Thank you"
+		}
+
+	if request.user.is_authenticated:
+		# PositionMatch.objects.update_top_suggestions(request.user, 20)
+		matches = Match.objects.get_matches_with_percent(request.user)[:6]
+		positions = PositionMatch.objects.filter(user=request.user)[:6]
+		if positions.count()>0:
+			# [0] --> because i need just the user position --> if you want to check just preint it
+			positions[0].check_update(20) #20 match total
+		locations = LocationMatch.objects.filter(user=request.user)[:6]
+		employers = EmployerMatch.objects.filter(user=request.user)[:6]
+		# suggested jobs, location and employer
+		# positions = []
+		# locations = []
+		# employers = [] 
+		# for match in matches: 
+		# 	# the above line bring match user object and percent but i want the first one which is match user
+		# 	job_set = match[0].userjob_set.all()
+		# 	if job_set.count()>0:
+		# 		for job in job_set:
+		# 			if job.position not in positions:
+		# 				positions.append(job.position)
+		# 				try:
+		# 					the_job = Job.objects.get(title__iexact=job.position)
+		# 					positionmatch, created = PositionMatch.objects.get_or_create(user=request.user, job=the_job)
+		# 					print("Job match are: ", positionmatch)
+		# 				except:
+		# 					pass
+		# 			if job.location not in locations:
+		# 				locations.append(job.location)
+		# 				try:
+		# 					the_loc = Location.objects.get(name__iexact=job.location)
+		# 					locmatch, created = LocationMatch.objects.get_or_create(user=request.user, location = the_loc)
+		# 					print("Local match are: ", locmatch)
+		# 				except:
+		# 					pass 
+		# 			if job.employer_name not in employers:
+		# 				employers.append(job.employer_name)
+		# 				try:
+		# 					the_employer = Employer.objects.get(name__iexact=job.employer_name)
+		# 					employermatch = EmployerMatch.objects.get_or_create(user=request.user, employer=the_employer)
+		# 					print("Employer match are: ", employermatch)
+		# 				except:
+		# 					pass
+
+
+		queryset = Question.objects.all().order_by('-timestamp') 
+		context = {
+			"queryset": queryset, 
+			'matches': matches,
+			'positions': positions,
+			'locations': locations,
+			'employers': employers,
+		}
+		return render(request, "questions/home.html", context)
+
+	return render(request, "home.html", context)
 
 
 def contact(request):

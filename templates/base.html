@@ -16,6 +16,9 @@
     {% include 'head_css.html' %}
 
       <style>
+        .alert-top-message {
+              margin-top: -19px;
+        }
       {% block style %}{% endblock %}
       </style>
 
@@ -25,8 +28,16 @@
 
   <body>
   {% include 'navbar.html' %}
-
-{% block jumbotron %}
+  {% if messages %} 
+    <div class="alert alert-success alert-top-message" role="alert">
+      <div class="container text-center">
+          {% for message in messages %}
+          {% if "safe" in message.tags %} {{message|safe}} {% else %} {{ message }} {% endif %} <br>
+          {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+    {% block jumbotron %}
           
             {% endblock %}
     <div class="container">

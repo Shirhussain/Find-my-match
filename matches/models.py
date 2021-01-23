@@ -8,6 +8,7 @@ import datetime
 
 
 from .utils import get_match
+from .signals import user_matches_update
 from jobs.models import Job, Location, Employer
 
 # get_or_create looking for two user now i'm goging to look just for one of them.
@@ -54,6 +55,14 @@ class MatchManager(models.Manager):
             # new_instance.question_answered = num_of_questions
             # new_instance.save()
             return new_instance, True
+    
+    # this is gonna update all the matches for the user that they already have
+    # it's not creating it's just updating for every single user
+    def update_for_user(self, user):
+        qs = self.get_queryset().matches(user)
+        for instance in qs:
+            instance.do_match()
+        return True
 
     def update_all(self):
         queryset = self.all()
@@ -144,6 +153,13 @@ class Match(models.Model):
 
     def get_absolute_url(self):
         return reverse("match_detail", kwargs={"pk": self.pk})
+
+
+def user_matches_update_receiver(sender, user, *args, **kwargs):
+    updated = Match.objects.update_for_user(user)
+    print(updated)
+
+user_matches_update.connect(user_matches_update_receiver)
 
 
 class PositionMatchManager(models.Manager):

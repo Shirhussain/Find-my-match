@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from jobs.models import Job, Location, Employer
 from .models import PositionMatch, LocationMatch, EmployerMatch, Match
 
+# update when they logged in 
 @receiver(user_logged_in)
 def get_user_match_receiver(sender, request, user, *args, **kwargs):
     for u in User.objects.exclude(username=user.username).order_by('-id')[:200]:
