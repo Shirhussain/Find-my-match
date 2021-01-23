@@ -8,12 +8,21 @@
 {% block content %}
 
 {% if new_user %}
-    <h1>Welcome dear new user</h1>
+    <div class="row">
+        <div class="col-sm-12">
+            <p class="lead text-center">Answer more questions to get the best match and connect</p>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            {% include 'questions/user_response_form.html' with form=question_form instance=question_instance center_text=True %}
+        </div>
+    </div>
 {% else %}
     <div class="row">
         <div class="col-sm-8">
-            <h1>Dashboard</h1>
-            
+            {% include 'questions/user_response_form.html' with form=question_form instance=question_instance title_size=3 center_text=True %}
             {% if mutual_likes %}
                 <div class="col-sm-12">
                     <h3>Mutual interest</h3>

@@ -1,34 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form action="" method="POST">
-        {{form.errors}}
-        {% csrf_token %}
-        <h1>{{instance.text}}</h1>
-        <input type="hidden" name="question_id" value="{{instance.id}}">
-        
-        <h2>importance level for you </h2>
-        {% for ans in instance.answer_set.all %}
-            <input type="radio" name="answer_id" 
-                value="{{ans.id}}" 
-                {% if user_answer.my_answer.id == ans.id %} checked=checked {% endif %} /> &nbsp;{{ans.text}} <br>
-        {% endfor %}
-        <br>
-        Importance: &nbsp; {{form.importants_level}}
-
-        <h2>importance level for your boss </h2>
-        {% for ans in instance.answer_set.all %}
-            <input type="radio" name="their_answer_id" 
-            value="{{ans.id}}"
-            {% if user_answer.their_answer.id == ans.id %} checked=checked {% endif %} /> &nbsp;{{ans.text}} <br>
-        {% endfor %}
-        <input type="radio" name="their_answer_id" value="-1" 
-            {% if not user_answer.their_answer.id %} checked=checked {% endif %} /> &nbsp; Holds no importance<br>
-        <br>
-        Importance:&nbsp; {{form.their_importants_level}}
-        <br><br>
-        <input type="submit" value="Save and continue">
-    </form>
+    <!-- i'm adding title size here to just manipulate the size of title in dashboard  -->
+    {% include 'questions/user_response_form.html' with instance=instance form=form %}
         
 {% endblock content %}
     

@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from .forms import ContactForm, SignUpForm
 from .models import SignUp
 from questions.models import Question
+from questions.forms import UserResponseForm
 from matches.models import Match, LocationMatch, PositionMatch, EmployerMatch
 from jobs.models import Job, Employer, Location
 from likes.models import UserLike
@@ -27,7 +28,10 @@ def home(request):
 		if len(mutual_likes) == 0 or len(matches)==0:
 			new_user = True
 
-		queryset = Question.objects.all().order_by('-timestamp') 
+		queryset = Question.objects.all().order_by('-timestamp')
+		if queryset.count()>0:
+			question_instance = queryset.order_by('?')[0]
+		question_form = UserResponseForm()
 		context = {
 			"queryset": queryset, 
 			'matches': matches,
@@ -36,6 +40,8 @@ def home(request):
 			'employers': employers,
 			'mutual_likes': mutual_likes,
 			'new_user': new_user,
+			'question_form': question_form,
+			'question_instance': question_instance,
 		}
 		return render(request, "dashboard/home.html", context)
 	

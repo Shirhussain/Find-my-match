@@ -1,0 +1,44 @@
+<div class=" {% if center_text %} text-center {% endif %}">
+    <form action="{% url 'questions:single' id=instance.id %}" method="POST">
+        {{form.errors}}
+        {% csrf_token %}
+        
+        {% if title_size %}
+            <h{{title_size}}>{{instance.text}}?</h{{title_size}}>
+        {% else %}
+            <h1>{{instance.text}}?</h1>
+        {% endif %}
+            
+        <input type="hidden" name="question_id" value="{{instance.id}}">
+        
+        {% if title_size %}
+            <h{{title_size|add:1}}>Your answer </h{{title_size|add:1}}>
+        {% else %}
+            <h2>Your answer </h2>
+        {% endif %}
+        {% for ans in instance.answer_set.all %}
+            <input type="radio" name="answer_id" 
+                value="{{ans.id}}" 
+                {% if user_answer.my_answer.id == ans.id %} checked=checked {% endif %} /> &nbsp;{{ans.text}} <br>
+        {% endfor %}
+        <br>
+        Importance: &nbsp; {{form.importants_level}}
+
+        {% if title_size %}
+            <h{{title_size|add:1}}>Their answer </h{{title_size|add:1}}>
+        {% else %}
+            <h2>Their answer </h2>
+        {% endif %}
+        {% for ans in instance.answer_set.all %}
+            <input type="radio" name="their_answer_id" 
+            value="{{ans.id}}"
+            {% if user_answer.their_answer.id == ans.id %} checked=checked {% endif %} /> &nbsp;{{ans.text}} <br>
+        {% endfor %}
+        <input type="radio" name="their_answer_id" value="-1" 
+            {% if not user_answer.their_answer.id %} checked=checked {% endif %} /> &nbsp; Holds no importance<br>
+        <br>
+        Importance:&nbsp; {{form.their_importants_level}}
+        <br><br>
+        <input class="btn btn-success" type="submit" value="Save and continue">
+    </form>
+</div>
