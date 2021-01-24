@@ -18,8 +18,9 @@ def get_match(user_a, user_b):
 	question_set = (question_set1 | question_set2).distinct()
 	a_points = 0 
 	b_points = 0 
-	a_total_points = 0 
-	b_total_points = 0 
+	# because i'm deviding by these total points so i can't put just '0' here
+	a_total_points = 0.000001 
+	b_total_points = 0.000001 
 	question_in_common = 0 
 	for question in question_set:
 		try:
